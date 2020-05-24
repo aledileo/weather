@@ -1,15 +1,13 @@
 import fetch from 'node-fetch';
+import nextConnect from 'next-connect';
+import middleware from '../../middleware/cache';
 
 const requiredParams = ['lat', 'lon'];
 
+const handler = nextConnect();
+handler.use(middleware);
+
 async function forecastHandler(req, res) {
-
-  if (req.method !== 'GET') {
-    res.status(405).json({
-      message: `Sorry! ${req.method} is not implemented`
-    });
-  }
-
   const hasRequiredParams = requiredParams.every(param => Boolean(req.query[param]));
 
   if (!hasRequiredParams) {
@@ -29,7 +27,10 @@ async function forecastHandler(req, res) {
     city: 'Hamburg', // get city via lat/long with reverse geolocalization api
     hourly: forecast.hourly.map(({ dt, temp, weather }) => ({ dt, temp, main: weather[0].main, description: weather[0].description })).slice(0, 14),
   }
+
   res.status(200).json(data);
 }
 
-export default forecastHandler;
+handler.get(forecastHandler);
+
+export default handler;
