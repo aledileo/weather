@@ -33,7 +33,13 @@ async function forecastHandler(req, res) {
     
     const data = {
       city: 'Hamburg', // get city via lat/long with reverse geolocalization api
-      hourly: forecast.hourly.map(({ dt, temp, weather }) => ({ dt, temp, main: weather[0].main, description: weather[0].description })).slice(0, 14),
+      hourly: forecast.hourly.map(({ dt, temp, weather }) => ({ dt, temp, main: weather[0].main, description: weather[0].description })).slice(1, 14),
+      current: {
+        dt: forecast.current.dt,
+        temp: forecast.current.temp,
+        main: forecast.current.weather[0].main,
+        description: forecast.current.weather[0].description,
+      }
     }
     
     res.status(200).json(data);
