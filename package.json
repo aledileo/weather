@@ -2,8 +2,8 @@
   "name": "weather",
   "version": "0.1.0",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/aledileo/weather.git"
+    "type": "git",
+    "url": "https://github.com/aledileo/weather.git"
   },
   "scripts": {
     "dev": "next",
@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "next": "^9.2.0",
+    "node-fetch": "^2.6.0",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "swr": "^0.2.2"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.4.0",

@@ -1,22 +1,22 @@
-import Nav from '../components/nav';
 import Card from '../components/card';
+import useSWR from 'swr';
 
-const data = [
-  { temp: "12", message: "Light rain", time: "8" },
-  { temp: "16", message: "Cloudy", time: "12" },
-  { temp: "17", message: "Sunny", time: "16" },
-  { temp: "13", message: "Clear", time: "20" },
-];
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function IndexPage() {
+  const { data, error } = useSWR(() => '/api/forecast?lat=53.55&lon=10', fetcher, null);
+
+  if (error) return <div>Failed to load</div>
+  if (!data) return <div>Loading...</div>
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen space-y-8">
+    <div className="flex flex-col items-center justify-center space-y-8">
       <div className="max-w-s">
         <h1 className="text-5xl">
-          Hamburg
+          {data.city}
         </h1>
       </div>
-      { data.map(weather => <Card weather={weather}/>) }
+      { data.hourly.map(weather => <Card key={weather.dt} weather={weather}/>) }
     </div>
   )
 }
