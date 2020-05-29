@@ -1,4 +1,6 @@
-import Sun from '../icons/sun.svg';
+
+
+import { getIconByCondition } from '../helpers/getIconByCondition';
 
 function formatTime(dt) {
   const time = new Date(dt * 1000);
@@ -10,13 +12,13 @@ function formatTime(dt) {
 function isTomorrow (dt) {
   const date = new Date(dt * 1000);
   const today = new Date();
-  console.log(date.getDate(), today.getDate() + 1)
   return date.getDate() === today.getDate() + 1
 }
 
 export default function Card({ weather }) {
-  const { temp, description, dt } = weather;
+  const { temp, description, dt, main } = weather;
   const time = formatTime(dt);
+  const Icon = getIconByCondition(main, dt);
   return (
     <div className="max-w-sm rounded overflow-hidden shadow-lg w-full">
       <div className="flex items-center justify-between px-6 py-4 space-x-24">
@@ -26,7 +28,7 @@ export default function Card({ weather }) {
           <p className="inline-block font-light bg-black text-white px-2 rounded mb-2">{time}</p>
             { isTomorrow(dt) && <p className="font-light text-gray-700">Tomorrow</p> }
         </div>
-        <Sun className="w-20 h-20"/>
+        <Icon className="w-20 h-20"/>
       </div>
     </div>
   );
