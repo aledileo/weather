@@ -8,7 +8,12 @@ const pool = new TedisPool({
 });
 
 async function database(req, res, next) {
-  req.cache = new RedisCache(await pool.getTedis());
+  try {
+    req.cache = new RedisCache(await pool.getTedis());
+  } catch (e) {
+    console.error("Looks like there was an error connecting to Redis:", e.code);
+    console.info("Defaulting to no-cache mode")
+  }
   return next();
 }
 

@@ -9,6 +9,25 @@ const baseUrl = process.env.NEXT_PUBLIC_OPENWEATHER_ONECALL_URL;
 const handler = nextConnect();
 handler.use(middleware);
 
+async function getData(req) {
+
+  const { lat, lon } = req.query;
+  const url = `${baseUrl}?lat=${lat}&lon=${lon}&exclude=minutely,daily&appid=${apiKey}&units=metric`;
+
+  if(!req.cache) {
+    return (await fetch(url)).json();
+  }
+
+  if (await req.cache.exists(`${lat},${lon}`)) {
+    return req.cache.getJson(`${lat},${lon}`);
+  } else {
+    const forecast = await (await fetch(url)).json();
+    await req.cache.setJson(`${lat},${lon}`, forecast);
+    return forecast;
+  }
+
+}
+
 async function forecastHandler(req, res) {
   const hasRequiredParams = requiredParams.every(param => Boolean(req.query[param]));
 
@@ -19,17 +38,8 @@ async function forecastHandler(req, res) {
     });
   }
 
-  const { lat, lon } = req.query;
-  const url = `${baseUrl}?lat=${lat}&lon=${lon}&exclude=minutely,daily&appid=${apiKey}&units=metric`;
-  let forecast;
-
   try {
-    if (await req.cache.exists(`${lat},${lon}`)) {
-      forecast = await req.cache.getJson(`${lat},${lon}`);
-    } else {
-      forecast = await (await fetch(url)).json();
-      await req.cache.setJson(`${lat},${lon}`, forecast);
-    }
+    const forecast = await getData(req);
     
     const data = {
       city: 'Hamburg', // get city via lat/long with reverse geolocalization api

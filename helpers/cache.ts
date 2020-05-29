@@ -3,7 +3,7 @@ export default class RedisCache {
 
   public async setJson(key: string, obj: any, ttl: number = 60): Promise<void> {
     const serializedJson = JSON.stringify(obj);
-    await this.tedisClient.setex(key, ttl,serializedJson);
+    await this.tedisClient.setex(key, ttl, serializedJson);
     console.info(`Added ${key} to cache`);
   }
 
