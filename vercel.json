@@ -1,0 +1,6 @@
+{
+  "env": {
+    "OPENWEATHER_ONECALL_URL": "@openweather-onecall-url",
+    "OPENWEATHER_API_KEY": "@openweather-api-key"
+  }
+}

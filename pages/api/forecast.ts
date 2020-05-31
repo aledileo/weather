@@ -15,7 +15,6 @@ async function getData(req) {
   const url = `${baseUrl}?lat=${lat}&lon=${lon}&exclude=minutely,daily&appid=${apiKey}&units=metric`;
 
   if(!req.cache) {
-    console.log(process.env.OPENWEATHER_API_KEY, process.env.NEXT_PUBLIC_OPENWEATHER_ONECALL_URL);
     return (await fetch(url)).json();
   }
 
