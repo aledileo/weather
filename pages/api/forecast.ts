@@ -11,6 +11,11 @@ handler.use(middleware);
 
 async function getData(req) {
 
+  if (!apiKey || !baseUrl) {
+    console.log({ apiKey, baseUrl });
+    throw new Error("Insufficient info to make the request");
+  }
+
   const { lat, lon } = req.query;
   const url = `${baseUrl}?lat=${lat}&lon=${lon}&exclude=minutely,daily&appid=${apiKey}&units=metric`;
 
@@ -54,7 +59,10 @@ async function forecastHandler(req, res) {
     
     res.status(200).json(data);
   } catch(e) {
-    console.log(e)
+    res.status(500).json({
+      message: 'Lol, sorry. Something went wrong, check the logs',
+      error: e
+    })
   }
 }
 
