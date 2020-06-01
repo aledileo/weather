@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import nextConnect from 'next-connect';
-import middleware from '../../middleware/cache';
+import middleware from '../../middleware';
 
 const requiredParams = ['lat', 'lon'];
 const apiKey = process.env.OPENWEATHER_API_KEY;

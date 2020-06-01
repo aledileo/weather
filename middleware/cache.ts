@@ -1,5 +1,4 @@
 import { TedisPool } from 'tedis';
-import nextConnect from 'next-connect';
 import RedisCache from '../helpers/cache';
 
 const pool = new TedisPool({
@@ -7,7 +6,7 @@ const pool = new TedisPool({
   port: process.env.REDIS_PORT as unknown as number,
 });
 
-async function database(req, res, next) {
+async function cacheMiddleware(req, res, next) {
   try {
     req.cache = new RedisCache(await pool.getTedis());
   } catch (e) {
@@ -17,8 +16,4 @@ async function database(req, res, next) {
   return next();
 }
 
-const middleware = nextConnect();
-
-middleware.use(database);
-
-export default middleware;
+export default cacheMiddleware;
