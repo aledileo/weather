@@ -1,10 +1,16 @@
+import { useContext, useCallback, useMemo } from 'react';
 import Card from '../components/card';
 import useSWR from 'swr';
+import qs from 'query-string';
+import SettingsContext from '../context/SettingsContext';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function IndexPage() {
-  const { data, error } = useSWR(() => '/api/forecast?lat=53.55&lon=10', fetcher, null);
+  const { enabledHours } = useContext(SettingsContext);
+  const qparams = { lat: 53.55, lon: 10, enabledHours };
+  const querystring = useMemo(() => qs.stringify(qparams), [enabledHours]);
+  const { data, error } = useSWR(() => `/api/forecast?${querystring}`, fetcher, null);
 
   if (error) return <div>Failed to load</div>
   if (!data) return <div>Loading...</div>

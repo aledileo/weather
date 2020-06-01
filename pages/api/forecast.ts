@@ -33,9 +33,34 @@ async function getData(req) {
 
 }
 
+function transformHourlyFeed(hourlyFeed, enabledHours: Set<string>) {
+  const feedWithoutCurrent = hourlyFeed.slice(1);
+  const feedFilteredTwoDays = feedWithoutCurrent.filter(forecast => {
+    const currentDate = new Date().getDate();
+    const day = new Date(forecast.dt * 1000).getDate();
+    const isTodayOrTomorrow = day === currentDate || day === (currentDate + 1);
+    return isTodayOrTomorrow;
+  });
+
+  const feedFilteredHours = feedFilteredTwoDays.filter(forecast => {
+    const hour = new Date(forecast.dt * 1000).getHours();
+    return enabledHours.has(hour.toString());
+  });
+
+  const transformedFeed = feedFilteredHours.map(forecast => {
+    const { dt, temp, weather } = forecast;
+    return {
+      dt,
+      temp,
+      main: weather[0].main,
+      description: weather[0].description
+    }
+  })
+  return transformedFeed;
+}
+
 async function forecastHandler(req, res) {
   const hasRequiredParams = requiredParams.every(param => Boolean(req.query[param]));
-
   if (!hasRequiredParams) {
     res.status(400).json({
       message: 'Check your params!',
@@ -45,10 +70,12 @@ async function forecastHandler(req, res) {
 
   try {
     const forecast = await getData(req);
+    const enabledHours = new Set<string>(req.query.enabledHours || []);
+    const transformedHourlyFeed = transformHourlyFeed(forecast.hourly, enabledHours);
     
     const data = {
       city: 'Hamburg', // get city via lat/long with reverse geolocalization api
-      hourly: forecast.hourly.map(({ dt, temp, weather }) => ({ dt, temp, main: weather[0].main, description: weather[0].description })).slice(1, 14),
+      hourly: transformedHourlyFeed,
       current: {
         dt: forecast.current.dt,
         temp: forecast.current.temp,
