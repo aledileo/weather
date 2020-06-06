@@ -3,8 +3,8 @@ import Card from '../components/card';
 import useSWR from 'swr';
 import qs from 'query-string';
 import SettingsContext from '../context/SettingsContext';
+import fetcher from '../helpers/fetcher';
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function IndexPage() {
   const { enabledHours } = useContext(SettingsContext);
