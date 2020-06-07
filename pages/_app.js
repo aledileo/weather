@@ -1,6 +1,7 @@
 import '../styles/index.css';
 import Head from 'next/head';
 import SettingsContext, { defaultState } from '../context/SettingsContext';
+import IconsCopyright from '../components/IconsCopyright';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -22,6 +23,7 @@ function MyApp({ Component, pageProps }) {
     <SettingsContext.Provider value={defaultState}>
       <div className="flex flex-col items-center justify-center space-y-8 py-8">
         <Component {...pageProps} />
+        <IconsCopyright />
       </div>
     </SettingsContext.Provider>
     </>
